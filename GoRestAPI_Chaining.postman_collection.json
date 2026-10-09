@@ -1,0 +1,270 @@
+{
+  "info": {
+    "_postman_id": "f853a442-bcd2-4ad8-9cde-9b2cf4a3f0d2",
+    "name": "GoRestAPI_Chaining",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "32105902",
+    "_collection_link": "https://go.postman.co/collection/32105902-f853a442-bcd2-4ad8-9cde-9b2cf4a3f0d2?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Create user",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "var random = Math.random().toString(20).substring(2);\r",
+              "\r",
+              "var useremail = \"Jim\" + random + \"@gmail.com\";\r",
+              "var userName = \"Jim\" + random;\r",
+              "\r",
+              "pm.environment.set(\"env_user_email\", useremail);\r",
+              "pm.environment.set(\"env_user_name\", userName);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var res = JSON.parse(responseBody);\r",
+              "\r",
+              "pm.environment.set(\"User_ID\", res.id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"name\": \"{{env_user_name}}\",\r\n\"email\": \"{{env_user_email}}\",\r\n\"gender\": \"male\",\r\n\"status\": \"active\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/{{endpoint}}",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "{{endpoint}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//validating all json data\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"values of json fields\", () => {\r",
+              "var res = pm.response.json();\r",
+              "\r",
+              "pm.expect(res.id).to.eql(pm.environment.get(\"User_ID\"));\r",
+              "\r",
+              "pm.expect(res.name).to.eql(pm.environment.get(\"env_user_name\"));\r",
+              "\r",
+              "pm.expect(res.email).to.eql(pm.environment.get(\"env_user_email\"));\r",
+              "});\r",
+              "\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "packages": {},
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/{{endpoint}}/{{User_ID}}",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "{{endpoint}}",
+            "{{User_ID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Request",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "var random = Math.random().toString(20).substring(2);\r",
+              "\r",
+              "var useremail = \"Ram\" + random + \"@gmail.com\";\r",
+              "var userName = \"Ram\" + random;\r",
+              "\r",
+              "pm.environment.set(\"env_user_email\", useremail);\r",
+              "pm.environment.set(\"env_user_name\", userName);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"name\": \"{{env_user_name}}\",\r\n\"email\": \"{{env_user_email}}\",\r\n\"gender\": \"female\",\r\n\"status\": \"inactive\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/{{endpoint}}/{{User_ID}}",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "{{endpoint}}",
+            "{{User_ID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.environment.unset(\"User_ID\");\r",
+              "pm.environment.unset(\"env_user_email\");\r",
+              "pm.environment.unset(\"env_user_name\");"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/{{endpoint}}/{{User_ID}}",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "{{endpoint}}",
+            "{{User_ID}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_secret_0y1b}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "auth_secret_0y1b",
+      "secret": true,
+      "source": {
+        "provider": "postman",
+        "postman": {
+          "type": "cloud",
+          "secretId": "918b2cab-c2f7-4170-a112-df826145ea9a",
+          "vaultId": "db0337f6-b392-42b6-b09f-d854261ba804"
+        }
+      }
+    },
+    {
+      "key": "url",
+      "value": ""
+    },
+    {
+      "key": "endpoint",
+      "value": ""
+    }
+  ]
+}
